@@ -1,0 +1,112 @@
+on:
+  push:
+  schedule:
+    # run every day at 9am UTC
+    - cron: "0 9 * * *"
+
+name: Run Integration Tests
+
+jobs:
+  datadog-static-analyzer-prod:
+    runs-on: ubuntu-latest
+    name: Datadog Static Analyzer Prod
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run Datadog Static Analysis and Upload
+        id: datadog-static-analysis
+        uses: datadog/datadog-static-analyzer-github-action@v1
+        with:
+          dd_api_key: ${{ secrets.DD_API_KEY }}
+          dd_app_key: ${{ secrets.DD_APP_KEY }}
+          dd_service: code-analysis-testing
+          dd_env: ci-github-action
+          dd_site: datadoghq.com
+          diff_aware: true
+          subdirectory: test
+
+  software-composition-analysis-prod:
+    runs-on: ubuntu-latest
+    name: SCA Prod
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Generate SBOM and Upload
+        id: software-composition-analysis
+        uses: DataDog/datadog-sca-github-action@main
+        with:
+          dd_api_key: ${{ secrets.DD_API_KEY }}
+          dd_app_key: ${{ secrets.DD_APP_KEY }}
+          dd_service: code-analysis-testing
+          dd_env: ci-github-action
+          dd_site: datadoghq.com
+          use_osv_scanner: true
+
+  quality-gates-prod:
+    needs: [datadog-static-analyzer-prod, software-composition-analysis-prod]
+    runs-on: ubuntu-latest
+    name: Quality Gates Prod
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install node
+        uses: actions/setup-node@v4
+      - run: yarn global add @datadog/datadog-ci
+      - run: sleep 30
+      - run: >
+          DD_BETA_COMMANDS_ENABLED=1 
+          DD_API_KEY=${{ secrets.DD_API_KEY }}
+          DD_APP_KEY=${{ secrets.DD_APP_KEY }}
+          DD_SITE=datadoghq.com
+          datadog-ci gate evaluate --scope=team:static-analysis --scope=team:ci-app --scope=service:code-analysis-testing
+
+  datadog-static-analyzer-staging:
+    runs-on: ubuntu-latest
+    name: Datadog Static Analyzer Staging
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run Datadog Static Analysis and Upload
+        id: datadog-static-analysis
+        uses: datadog/datadog-static-analyzer-github-action@v1
+        with:
+          dd_app_key: ${{ secrets.DD_APP_KEY_STAGING }}
+          dd_api_key: ${{ secrets.DD_API_KEY_STAGING }}
+          dd_service: code-analysis-testing
+          dd_env: ci-github-action
+          dd_site: datad0g.com
+          diff_aware: true
+          subdirectory: test
+
+  software-composition-analysis-staging-osv-scanner:
+    runs-on: ubuntu-latest
+    name: SCA Staging OSV Scanner
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Generate SBOM and Upload
+        id: software-composition-analysis
+        uses: DataDog/datadog-sca-github-action@main
+        with:
+          dd_api_key: ${{ secrets.DD_API_KEY_STAGING }}
+          dd_app_key: ${{ secrets.DD_APP_KEY_STAGING }}
+          dd_service: code-analysis-testing
+          dd_env: ci-github-action
+          dd_site: datad0g.com
+          use_osv_scanner: true
+
+  quality-gates-staging:
+    needs: [datadog-static-analyzer-staging, software-composition-analysis-staging-osv-scanner]
+    runs-on: ubuntu-latest
+    name: Quality Gates Staging
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install node
+        uses: actions/setup-node@v4
+      - run: yarn global add @datadog/datadog-ci
+      - run: sleep 30
+      - run: >
+          DD_BETA_COMMANDS_ENABLED=1 
+          DD_API_KEY=${{ secrets.DD_API_KEY_STAGING }}
+          DD_APP_KEY=${{ secrets.DD_APP_KEY_STAGING }}
+          DD_SITE=datad0g.com
+          datadog-ci gate evaluate --scope=team:static-analysis --scope=team:ci-app --scope=service:code-analysis-testing
