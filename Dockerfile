@@ -24,7 +24,7 @@ FROM ubuntu:22.04
 
 COPY --from=build /app/target/release/datadog-static-analyzer /usr/local/bin/datadog-static-analyzer
 
-RUN apt update && apt install -y curl \
+RUN apt update && apt install -y curl git \
 	&& curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 	&& apt remove -y nodejs npm \
 	&& apt install -y nodejs \
