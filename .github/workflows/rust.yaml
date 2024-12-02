@@ -1,9 +1,6 @@
 on:
   push:
-    branches:
-      - "**"
   pull_request:
-
 name: Check Code
 jobs:
   check_code:
@@ -12,8 +9,10 @@ jobs:
         config:
           - { os: macos-13, target: x86_64-apple-darwin, gha_alias: 'macOS x64 - ' }
         cargo_cmd:
-          - { cmd_name: test, args: 'analysis::ddsa_lib::runtime::tests::query_execute_timeout', gha_alias: "Test" }
-    name: ${{ matrix.config.gha_alias }}${{ matrix.cargo_cmd.gha_alias }}
+          - { cmd_name: test, args: '--workspace', gha_alias: "Test" }
+        # Add iteration number to run tests 20 times
+        iteration: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    name: ${{ matrix.config.gha_alias }}${{ matrix.cargo_cmd.gha_alias }} (Run ${{ matrix.iteration }})
     runs-on: ${{ matrix.config.os }}
     env:
       DD_API_KEY: ${{ secrets.DD_API_KEY }}
@@ -21,10 +20,17 @@ jobs:
       DD_SITE: ${{ vars.DD_SITE }}
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1.10.1
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          profile: minimal
+      - uses: ./.github/actions/rust-cache
+        with:
+          cargo-target: ${{ matrix.config.target }}
+          cargo-cache-key: debug
       - name: Run cargo ${{ matrix.cargo_cmd.cmd_name }} ${{ matrix.cargo_cmd.args }}
-        run: |
-          for i in {1..100}; do
-            cargo ${{ matrix.cargo_cmd.cmd_name }} ${{ matrix.cargo_cmd.args }}
-          done
+        uses: actions-rs/cargo@v1
+        with:
+          command: ${{ matrix.cargo_cmd.cmd_name }}
+          args: ${{ matrix.cargo_cmd.args }}
