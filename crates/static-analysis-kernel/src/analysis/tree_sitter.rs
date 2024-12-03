@@ -168,6 +168,7 @@ impl<'a, 'tree> TSQueryCursor<'a, 'tree> {
     ///
     /// ***Note:*** Because multiple patterns can match the same set of nodes, one match may contain captures
     /// that appear before _(i.e. the source text location)_ some of the captures from a previous match.
+    #[allow(deprecated)]
     pub fn matches(
         &'a mut self,
         node: tree_sitter::Node<'tree>,
