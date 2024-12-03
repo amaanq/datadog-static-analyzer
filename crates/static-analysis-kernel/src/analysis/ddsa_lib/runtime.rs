@@ -683,8 +683,6 @@ mod tests {
         rule_code: &str,
         mut timeout: Option<Duration>,
     ) -> Result<Vec<js::Violation<Instance>>, DDSAJsRuntimeError> {
-        let now = Instant::now();
-
         let source_text: Arc<str> = Arc::from(source_text);
         let filename: Arc<str> = Arc::from(filename);
 
@@ -696,17 +694,22 @@ mod tests {
 
         let ts_query = crate::analysis::tree_sitter::TSQuery::try_new(&ts_lang, ts_query).unwrap();
 
+        let now = Instant::now();
         let mut curs = ts_query.cursor();
+        println!("Starting query with timeout: {:?}", timeout);
         let q_matches = curs
             .matches(tree.root_node(), source_text.as_ref(), timeout)
             .collect::<Vec<_>>();
         let ts_query_time = now.elapsed();
+        println!("Query completed in: {:?}", ts_query_time);
+        println!("Got {} matches", q_matches.len());
 
         // It's possible that the TS query took about as long as the timeout itself, and since
         // we compute the time just a little bit before matches are run, `ts_query_time` could be
         // larger than the timeout. In this case, we assume that execution timed out.
         // Otherwise, we pass the remaining time left to the rule execution.
         timeout = timeout.map(|t| t.checked_sub(ts_query_time).unwrap_or_default());
+        println!("well the timeout is now {:?}", timeout);
         if timeout == Some(Duration::ZERO) {
             return Err(DDSAJsRuntimeError::TreeSitterTimeout {
                 timeout: timeout
