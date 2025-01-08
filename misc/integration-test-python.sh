@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cargo build --profile release-dev --bin datadog-static-analyzer
+cargo build --locked --profile release-dev --bin datadog-static-analyzer
 
 ## A Python repository
 echo "Checking django repository"
