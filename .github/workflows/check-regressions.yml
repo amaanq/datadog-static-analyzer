@@ -48,7 +48,7 @@ jobs:
           repository: ${{ matrix.repo.org }}/${{ matrix.repo.name }}
           path: ${{ matrix.repo.org }}/${{ matrix.repo.name }}
 
-      - name: Fetch dependencies
+      - name: Fetch dependencies (before)
         run: cargo fetch
 
       - name: Obtain results before changes
@@ -60,6 +60,9 @@ jobs:
           git fetch --all
           git checkout ${{ github.sha }}
           echo 'checked out ${{ github.sha }}'
+
+      - name: Fetch dependencies (after)
+        run: cargo fetch
 
       - name: Obtain results after changes
         run: |
