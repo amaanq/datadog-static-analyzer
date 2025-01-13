@@ -1,5 +1,6 @@
 #!/bin/bash
 
+cargo fetch
 cargo build --locked --profile release-dev --bin datadog-static-analyzer-git-hook
 
 ## A Python repository
