@@ -18,6 +18,7 @@ RUN curl https://sh.rustup.rs -sSf | sh -s -- -y \
 
 COPY . /app
 WORKDIR /app
+RUN cargo fetch
 RUN cargo build --locked --release --bin datadog-static-analyzer
 RUN cargo build --locked --release --bin datadog-static-analyzer-git-hook
 RUN cargo build --locked --release --bin datadog-static-analyzer-server
