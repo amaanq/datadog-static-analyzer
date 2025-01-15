@@ -103,7 +103,7 @@ jobs:
     name: Release on GitHub
     needs:
       - test-rules
-      - test-docker
+      - test-docker-build
       - integration-tests
       - verify-schema
       - versions-check
