@@ -12,8 +12,8 @@ jobs:
   test-rules:
     uses: './.github/workflows/test-rules.yaml'
 
-  test-docker:
-    uses: './.github/workflows/docker.yml'
+  test-docker-build:
+    uses: './.github/workflows/docker-build.yml'
 
   integration-tests:
     uses: './.github/workflows/integration-tests.yaml'
