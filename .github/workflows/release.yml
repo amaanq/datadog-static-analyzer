@@ -12,6 +12,9 @@ jobs:
   test-rules:
     uses: './.github/workflows/test-rules.yaml'
 
+  test-docker:
+    uses: './.github/workflows/docker.yml'
+
   integration-tests:
     uses: './.github/workflows/integration-tests.yaml'
     secrets: inherit
@@ -100,6 +103,7 @@ jobs:
     name: Release on GitHub
     needs:
       - test-rules
+      - test-docker
       - integration-tests
       - verify-schema
       - versions-check
