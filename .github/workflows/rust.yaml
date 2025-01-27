@@ -38,7 +38,9 @@ jobs:
 
         # This needs to happen *before* the fetch dependencies step, as the lockfile will be updated by the fetch.
       - name: Check the lockfile is up to date
-        run: cargo check --locked
+        run: |
+          cargo check
+          git diff --exit-code Cargo.lock
 
       - name: Fetch dependencies
         run: cargo fetch
