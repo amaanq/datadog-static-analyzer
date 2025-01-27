@@ -39,6 +39,11 @@ jobs:
       - name: Fetch dependencies
         run: cargo fetch
 
+      - name: Check the lockfile is up to date
+        run: |
+          cargo check
+          git diff --exit-code Cargo.lock
+
       - name: Run cargo ${{ matrix.cargo_cmd.cmd_name }} ${{ matrix.cargo_cmd.args }}
         uses: actions-rs/cargo@v1
         with:
