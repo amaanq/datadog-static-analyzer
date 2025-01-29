@@ -36,12 +36,6 @@ jobs:
       - name: Set up Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1.10.1
 
-        # This needs to happen *before* the fetch dependencies step, as the lockfile will be updated by the fetch.
-      - name: Check the lockfile is up to date
-        run: |
-          cargo check
-          git diff --exit-code Cargo.lock
-
       - name: Fetch dependencies
         run: cargo fetch
 
@@ -50,6 +44,12 @@ jobs:
         with:
           command: ${{ matrix.cargo_cmd.cmd_name }}
           args: ${{ matrix.cargo_cmd.args }}
+
+      - name: Check the lockfile is up to date
+        if: ${{ matrix.config.target == 'aarch64-unknown-linux-gnu' }}
+        run: |
+          cargo check
+          git diff --exit-code Cargo.lock
 
       - name: Check python rulesets - part1
         run: cargo run --locked --bin datadog-static-analyzer-test-ruleset -- -r python-best-practices -r python-security -r python-code-style -r python-inclusive
