@@ -773,9 +773,9 @@ dependencies = [
 
 [[package]]
 name = "deno_core"
-version = "0.334.0"
+version = "0.330.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "14401925c45e1d75a4c40945a49acb8b2188d23a8b44e5126284265678490289"
+checksum = "fd38bbbd68ed873165ccb630322704b44140d3a8c8d50f898beac4d1a8a3358c"
 dependencies = [
  "anyhow",
  "az",
@@ -788,7 +788,6 @@ dependencies = [
  "deno_core_icudata",
  "deno_error",
  "deno_ops",
- "deno_path_util",
  "deno_unsync",
  "futures",
  "indexmap 2.7.0",
@@ -843,9 +842,9 @@ dependencies = [
 
 [[package]]
 name = "deno_ops"
-version = "0.210.0"
+version = "0.206.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6667b8a071913bf1bb561354edff67d6f468de98f2d964f2462e8b94b0a714cd"
+checksum = "4c25ffa9d088ea00748dbef870bba110ac22ebf8cf7b2e9eb288409c5d852af3"
 dependencies = [
  "indexmap 2.7.0",
  "proc-macro-rules",
@@ -856,19 +855,6 @@ dependencies = [
  "strum_macros 0.25.3",
  "syn 2.0.95",
  "thiserror 2.0.10",
-]
-
-[[package]]
-name = "deno_path_util"
-version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c87b8996966ae1b13ee9c20219b1d10fc53905b9570faae6adfa34614fd15224"
-dependencies = [
- "deno_error",
- "percent-encoding",
- "sys_traits",
- "thiserror 2.0.10",
- "url",
 ]
 
 [[package]]
@@ -3375,9 +3361,9 @@ dependencies = [
 
 [[package]]
 name = "serde_v8"
-version = "0.243.0"
+version = "0.239.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "547babe36614d566599b136c508509ba8be79d169ce11364eefa8627acbf1e4a"
+checksum = "3caa6d882827148e5d9052d9d8d6d1c9d6ad426ed00cab46cafb8c07a0e7126a"
 dependencies = [
  "deno_error",
  "num-bigint",
@@ -3733,12 +3719,6 @@ dependencies = [
  "quote",
  "syn 2.0.95",
 ]
-
-[[package]]
-name = "sys_traits"
-version = "0.1.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "638f0e61b5134e56b2abdf4c704fd44672603f15ca09013f314649056f3fee4d"
 
 [[package]]
 name = "system-configuration"
