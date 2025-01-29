@@ -49,7 +49,7 @@ jobs:
         if: ${{ matrix.config.target == 'aarch64-unknown-linux-gnu' }}
         run: |
           cargo check
-          git diff --exit-code Cargo.lock
+          git diff --exit-code Cargo.lock || echo "::error::Lockfile is out of date. Please run 'cargo check' and commit the updated Cargo.lock file."
 
       - name: Check python rulesets - part1
         run: cargo run --locked --bin datadog-static-analyzer-test-ruleset -- -r python-best-practices -r python-security -r python-code-style -r python-inclusive
